@@ -20,7 +20,7 @@ module Api
       return TorigoyaKit::ExecutionSetting.new(command_line,
                                                structured_command_line,
                                                5,   # 5sec
-                                               1 * 1024 * 1024 * 1024 # 1GB
+                                               2 * 1024 * 1024 * 1024 # 1GB
                                                )
     end
 
