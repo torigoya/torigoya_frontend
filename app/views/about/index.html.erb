@@ -7,17 +7,39 @@
         <h3>ProcGardenとは？</h3>
         <p>
             ProcGardenはオンラインでコンパイラやインタープリタを試すことのできるサービスです。現在作成中のため，不具合が多々存在します．<br>
-            バグ報告や要望などは，<a href="https://github.com/yutopp/torigoya_frontend">Github</a>でissueを作成するか，右上のFeedbackからお願いします．
+            バグ報告や要望などは，<a href="https://github.com/torigoya/torigoya_frontend">Github</a>でissueを作成するか，右上のFeedbackからお願いします．
         </p>
 
 
         <h3>使い方</h3>
         <p>
             エディタにソースコードを入力して，Ctrl+Enter，もしくは右上のSubmitボタンを押すだけです．<br>
-            左下のcombo boxから処理系を選択することができます．
+            左下のcombo boxから処理系を選択することができます．<br>
+            <br>
+            他のソースコードは，右上のCloneボタンを押すことで，そのソースコードを複製し，変更・実行が行えるようになります．
         </p>
 
-        <h3>バージョン</h3>
+        <h3>言語処理系について</h3>
+        <p>
+            ProcGardenで使うことのできる言語処理系は <a href="http://node.sc.yutopp.net:8080/">Torigoya Factory</a> から参照することができます．
+        </p>
+
+        <h3>オープンソース</h3>
+        <p>
+            ProcGardenで用いられているプログラムは，全てオープンソースとして公開されています．<br>
+            これらを用いることで，ローカル環境でもProcGardenを構築することが可能です．
+            <ul>
+                <li><a href="https://github.com/torigoya/torigoya_frontend">Frontend</a></li>
+                <li><a href="https://github.com/yutopp/torigoya_cage">Cage(Sandbox)</a></li>
+                <li><a href="https://github.com/yutopp/torigoya_proc_profiles">Profiles</a></li>
+                <li><a href="https://github.com/yutopp/torigoya_package_scripts">BuildScripts</a></li>
+                <li><a href="https://github.com/yutopp/torigoya_factory">Factory(BuildService)</a></li>
+                <li><a href="https://github.com/yutopp/torigoya_kit">RubyGem</a></li>
+            </ul>
+            バグ報告・要望・プルリクは大歓迎です！
+        </p>
+
+        <h3>フロントエンドバージョン</h3>
         <p><%= @version %></p>
     </div>
 </div>
