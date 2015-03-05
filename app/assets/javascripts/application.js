@@ -15,6 +15,7 @@
 //= require jquery-cookie
 //= require jquery-autosize
 //= require jquery-ui
+//= require reconnectingWebsocket
 //= require bootstrap
 //= require angular
 //= require angular-ui-bootstrap-tpls
@@ -26,6 +27,12 @@
 //= require codemirror/addons/mode/loadmode
 //= require codemirror/addons/edit/matchbrackets
 //= require turbolinks
+
+//= codemirror_editor
+//= angular_app
+//= procgarden_controller
+//= editor_controller
+
 //= require_tree .
 
 // with turbolinks

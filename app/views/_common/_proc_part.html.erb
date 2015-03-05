@@ -58,7 +58,7 @@
     <% end %>
 
     <!-- compile link -->
-    <div class="row" ng-if="ticket.current_proc.profile.is_build_required === true">
+    <div class="row sc-build-row" ng-if="ticket.current_proc.profile.is_build_required === true">
         <div class="col-sm-12">
             <accordion close-others="false">
                 <%= render :partial => '_common/ticket_detail_accordion_group', :locals => {

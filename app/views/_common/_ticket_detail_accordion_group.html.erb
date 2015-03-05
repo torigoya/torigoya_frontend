@@ -4,11 +4,16 @@
                  ng-if="ticket.current_proc.profile.<%- if mode == 'compile' -%>is_build_required<%- elsif mode == 'link' -%>is_link_independent<%- end -%> === true">
     <accordion-heading>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-xs-2">
                 <h6>
                     <span class="glyphicon glyphicon-chevron-{{ticket.<%= mode %>.ui.is_option_opened ? 'up' : 'down'}}"></span>
-                    <%= mode %> <span class="label"
-                                      ng-class="ticket.<%= mode %>.status_ui.label_style">
+                    <%= mode %>
+                </h6>
+            </div>
+            <div class="col-xs-2 for-label">
+                <h6>
+                    <span class="label"
+                          ng-class="ticket.<%= mode %>.status_ui.label_style">
                         {{ticket.<%= mode %>.status_ui.label}}
                     </span>
                 </h6>

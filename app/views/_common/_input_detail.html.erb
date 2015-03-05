@@ -1,95 +1,96 @@
-<!-- resource -->
-<div class="row">
-    <div class="col-sm-4">
-        <h5>
-            <span class="label"
-                  ng-class="input.status_ui.label_style">
-                {{input.status_ui.label}}
-            </span>
-        </h5>
+<div class="input-container">
+    <div class="input-row">
+        <div class="col-xs-3">
+            <h5>
+                <span class="label"
+                      ng-class="input.status_ui.label_style">
+                    {{input.status_ui.label}}
+                </span>
+            </h5>
+        </div>
+
+        <%= render :partial => '_common/result_status_line', :locals => {
+            :obj => "input"
+        } %>
     </div>
 
-    <%= render :partial => '_common/result_status_line', :locals => {
-      :obj => "input"
-    } %>
-</div>
-<!-- /resource -->
+    <%# command line %>
+    <div class="input-row">
+        <div class="col-xs-12">
+            <%= render :partial => '_common/cmd_line_string', :locals => {
+                :obj => "input",
+                :readonly => readonly
+            } %>
+        </div>
+    </div>
 
+    <%# command line (for runtime) %>
+    <% unless readonly %>
+        <%# For active page! %>
+        <%= render :partial => '_common/structured_cmd_line', :locals => {
+            :tag => "input-row",
+            :obj => "input"
+        } %>
 
-<%# command line %>
-<%= render :partial => '_common/cmd_line_string', :locals => {
-    :obj => "input",
-    :readonly => readonly
-} %>
+        <div class="input-row"
+             ng-if="input.cmd_args.ui.is_option_opened === true">
+            <div class="col-sm-12">
+                <input type='text'
+                       style="width:100%"
+                       class="form-control"
+                       ng-model="input.cmd_args.freed"
+                       placeholder='runtime command line'>
+                </input>
+            </div>
+        </div>
 
+    <% else %>
+        <%# For entry page! %>
+        <div class="input-row"
+             ng-if="input.cmd_args.freed.length>0">
+            <div class="col-sm-12">
+                <input type='text'
+                       style="width:100%"
+                       class="form-control"
+                       ng-model="input.cmd_args.freed"
+                       readonly>
+                </input>
+            </div>
+        </div>
+    <% end %>
 
-<% unless readonly %>
-    <%# For active page! %>
-    <%= render :partial => '_common/structured_cmd_line', :locals => {
+    <%# outputs %>
+    <%= render :partial => '_common/standard_outputs', :locals => {
+        :tag => "input-row",
         :obj => "input"
     } %>
 
-    <div class="row"
-         ng-if="input.cmd_args.ui.is_option_opened === true">
-        <div class="col-sm-12">
-            <input type='text'
-                   style="width:100%"
-                   class="form-control"
-                   ng-model="input.cmd_args.freed"
-                   placeholder='runtime command line'>
-            </input>
-        </div>
-    </div>
-
-<% else %>
-    <%# For entry page! %>
-
-    <div class="row"
-         ng-if="input.cmd_args.freed>0">
-        <div class="col-sm-12">
-            <input type='text'
-                   style="width:100%"
-                   class="form-control"
-                   ng-model="input.cmd_args.freed"
-                   readonly>
-            </input>
-        </div>
-    </div>
-<% end %>
-
-
-<%# outputs %>
-<%= render :partial => '_common/standard_outputs', :locals => {
-    :obj => "input"
-} %>
-
-
-<% unless readonly %>
-    <%# For active page! %>
-
     <%# stdin %>
-    <div class="row">
-        <div class="col-sm-12">
-            <textarea style="width:100%"
-                      class="form-control"
-                      rows='3'
-                      ng-model="input.stdin"
-                      placeholder='stdin…'>
-            </textarea>
+    <% unless readonly %>
+        <%# For active page! %>
+        <div class="input-row">
+            <div class="col-sm-12">
+                <textarea style="width:100%"
+                          class="form-control"
+                          rows='3'
+                          ng-model="input.stdin"
+                          placeholder='stdin…'>
+                </textarea>
+            </div>
         </div>
-    </div>
 
-<% else %>
-    <%# For entry page! %>
-
-    <div class="row" ng-if="input.stdin>0">
-        <div class="col-sm-12">
-            <textarea style="width:100%"
-                      class="form-control"
-                      rows='3'
-                      ng-model="input.stdin"
-                      readonly>
-            </textarea>
+    <% else %>
+        <%# For entry page! %>
+        <div class="input-row" ng-if="input.result.stdin.length>0">
+            <div class="col-sm-12">
+                <textarea style="width:100%"
+                          class="form-control"
+                          rows='3'
+                          ng-model="input.result.stdin"
+                          readonly>
+                </textarea>
+            </div>
         </div>
-    </div>
-<% end %>
+    <% end %>
+
+</div>

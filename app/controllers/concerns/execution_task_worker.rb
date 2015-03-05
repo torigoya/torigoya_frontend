@@ -117,45 +117,27 @@ module ExecutionTaskWorker
             if memo[:compile][res.index].nil?
               # change phase
               model.phase = Phase::Compiling
-              # create state info
-              st = ticket.build_inst.compile_setting
-              sc = st.structured_command.map &:to_tuple
-              memo[:compile][res.index] = CompileState.new(:index => res.index,
-                                                           :structured_command_line => sc,
-                                                           :cpu_time_sec_limit => st.cpu_limit,
-                                                           :memory_bytes_limit => st.memory_limit
-                                                           )
-              model.compile_state = memo[:compile][res.index]
+
+              # set state info (res.index may be 0)
+              memo[:compile][res.index] = model.compile_state
             end
 
           when TorigoyaKit::ResultMode::LinkMode
             if memo[:link][res.index].nil?
               # change phase
               model.phase = Phase::Linking
-              #
-              st = ticket.build_inst.link_setting
-              sc = st.structured_command.map &:to_tuple
-              memo[:link][res.index] = LinkState.new(:index => res.index,
-                                                     :structured_command_line => sc,
-                                                     :cpu_time_sec_limit => st.cpu_limit,
-                                                     :memory_bytes_limit => st.memory_limit
-                                                     )
-              model.link_state = memo[:link][res.index]
+
+              # set state info (res.index may be 0)
+              memo[:link][res.index] = model.link_state
             end
 
           when TorigoyaKit::ResultMode::RunMode
             if memo[:run][res.index].nil?
               # change phase
               model.phase = Phase::Running
-              #
-              st = ticket.run_inst.inputs[res.index].run_setting
-              sc = st.structured_command.map &:to_tuple
-              memo[:run][res.index] = RunState.new(:index => res.index,
-                                                   :structured_command_line => sc,
-                                                   :cpu_time_sec_limit => st.cpu_limit,
-                                                   :memory_bytes_limit => st.memory_limit
-                                                   )
-              model.run_states << memo[:run][res.index]
+
+              # set state info
+              memo[:run][res.index] = model.run_states[res.index]
             end
           end
 

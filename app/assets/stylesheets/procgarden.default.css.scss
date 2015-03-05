@@ -3,7 +3,7 @@ $grid-columns:              12;
 $grid-gutter-width:         8px;
 $grid-float-breakpoint:     768px;
 $navbar-height:             40px;
-$footer_height:             50px;
+$footer_height:             40px;
 $nav-link-padding:          10px 10px;
 
 //
@@ -27,50 +27,182 @@ $navbar-inverse-link-color: #eee;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+// variables
+$editor-ratio: 55%;
+$controller-ratio: 100% - $editor-ratio;
+$sc-space: 2px;
 
 // Sticky footer styles
 html {
+    width: 100%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
     position: relative;
-    min-height: 100%;
 }
 
 body {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
-
-    height: 100%;
-    width: 100%;
-    position: absolute;
 }
 
 
 // bootstrap
 .sc-top-container {
     width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
-    height: inherit;
-}
 
+    overflow-x: hidden;
+}
+/*
 .row {
     margin: 0;
     padding: 0;
 }
-
+*/
 .sc-lang-op-row {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
+
+.sc-build-row {
+    .panel-group {
+        margin-bottom: 0;
+    }
+
+    .sc-acc {
+        .for-label {
+            text-align: right;
+        }
+
+        panel.panel-default {
+        }
+
+        .panel-heading {
+            padding: 0 0 0 10px;
+            padding-left: 10px;
+        }
+
+        .panel-heading h6 {
+            margin: 4px 4px;
+        }
+
+        .panel-body {
+            padding: 0px;
+        }
+
+        .sc-command-line {
+            margin-bottom: -4px;
+            display: inline-block;
+            width: 100%;
+            overflow-x: auto;
+        }
+    }
+}
+
 
 // procgarden
 .main-container {
-    padding: ($navbar-height + 4px) 0 ($footer_height + 4px) 0;
+    padding: ($navbar-height + $sc-space) 0 ($footer_height + $sc-space) 0;
     margin: 0;
-    min-height: 100%;
+    height: 100%;
     width: 100%;
-    position: absolute;
 }
+
+.page-menu {
+    .column-l {
+        float: left;
+    }
+    .column-r {
+        float: right;
+    }
+    .button {
+        width: 20%;
+    }
+
+    .visibility-message {
+        vertical-align: middle;
+    }
+}
+
+.sc-main-editor {
+    $inner-menu-height: 30px;
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    .inner-menu {
+        height: $inner-menu-height;
+    }
+
+    .inner-frame {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+
+        .editor {
+            position: fixed;
+            top: ($navbar-height + $sc-space);
+            left: 0;
+            bottom: 0;
+
+            margin: 0;
+            padding: 0;
+            width: $editor-ratio;
+            z-index: 999;
+
+            .main {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+        }
+
+        .controller {
+            margin: 0 0 0 $editor-ratio;
+            padding: 0;
+
+            top: ($navbar-height + $inner-menu-height + 4px);
+            width: $controller-ratio;
+        }
+
+        @media (max-width: $grid-float-breakpoint - 1px) {
+            .editor {
+                position: static;
+                float: none;
+                width: 100%;
+                height: 320px;
+            }
+
+            .controller {
+                margin: 0;
+                float: none;
+                width: 100%;
+            }
+        }
+
+        .dummy {
+            clear: both;
+        }
+    }
+}
+
+
+.sc-sub-container {
+    .toolbar {
+        .accessibility {
+            text-align: right;
+        }
+    }
+}
+
 
 .has-no-extra-space {
     margin: 0;
@@ -121,45 +253,10 @@ body {
 // ticket append button
 .sc-add-btn {
     margin: 2px;
-}
 
-
-//////////////////////////////////////////////////
-// For panel
-.sc-acc panel.panel-default {
-}
-
-.sc-acc .panel-heading {
-    margin: -5px -5px -3px -5px;
-    padding: 0 0 0 10px;
-    padding-left: 10px;
-}
-
-.sc-acc .panel-heading h5 {
-    margin: 4px 4px;
-}
-
-.sc-acc .panel-body {
-    padding: 0px;
-}
-
-
-.sc-acc .sc-command-line {
-    margin-bottom: -4px;
-    display: inline-block;
-    width: 100%;
-    overflow-x: auto;
-}
-
-
-////////////////////////////////////////
-// For nputs tabs
-.nav-tabs > li.sc-ticket-input-tab > a {
-    padding-top: 0.3em;
-    height: 2em;
-}
-.nav-tabs > li.sc-ticket-input-tab.active > a {
-    //background-color: #f00;
+//    .btn {
+//        padding-right: 4px;
+//    }
 }
 
 
@@ -204,45 +301,70 @@ body {
     -ms-user-select: none;
 }
 
-#sc-code-editor-ctrl .well {
-    margin: 0;
-}
 
-// For
-.sidebar-nav {
-    padding: 9px 0;
-}
-
-
-// For editor
+// For controller
 .sc-input-tabset {
-    padding-left: ( $grid-gutter-width / 2 );
-    border-left: $gray-light solid ( $grid-gutter-width / 2 );
-    margin-top: ( $grid-gutter-width * 0.5 );
     badding-top: 0;
+
+    ul.nav {
+        width: 2em;
+        margin: 0;
+        padding: 0;
+        float: left;
+
+        li {
+            a {
+                height: 2em;
+                //padding: 2px 2px;
+            }
+        }
+    }
+
+    .tab-content {
+        width: 100%;
+        padding-left: 2em;
+
+        .input-container {
+            .input-row {
+                //@extend .row;
+            }
+        }
+    }
+
+    ////////////////////////////////////////
+    // For input tabs
+    li.sc-ticket-input-tab > a {
+        padding-top: 0.3em;
+        height: 2em;
+    }
+
+    li.sc-ticket-input-tab.active > a {
+        //background-color: #f00;
+    }
 }
 
-// For editor
-#sc-code-editor {
-    // nothing...
-}
 
+////////////////////////////////////////
 // For CodeMirror editor : default
 .CodeMirror {
-    margin-top: 4px;
     font-size: 13px;
     border: 1px solid #aaa;
-    height: auto;
+    height: 100%;
 }
 
 //
 .sc-normal-editor {
-    font-family: "Lucida Console", Monaco, monospace !important;
-    line-height: 1.00;
     width: 100%;
-    margin-top: 4px;
-    border: 1px solid #aaa;
-    height: auto;
+    height: 100%;
+
+    textarea {
+        font-family: "Lucida Console", Monaco, monospace !important;
+        line-height: 1.00;
+        width: 100%;
+        height: 100%;
+        margin-top: 4px;
+        border: 1px solid #aaa;
+    }
 }
 
 // For CodeMirror Tab
@@ -252,6 +374,8 @@ body {
     background-repeat: no-repeat;
 }
 
+
+////////////////////////////////////////
 //
 #symbol-bunchou {
     position: absolute;
@@ -260,41 +384,7 @@ body {
 }
 
 
-
-
-/*
- * Sidebar
- */
-
-// Hide for mobile
-
-.sc-sidebar {
-    display: none;
-}
-
-@media (min-width: $grid-float-breakpoint) {
-    .sc-sidebar {
-        position: fixed;
-        display: block;
-        z-index: 1000;
-
-        width: ($screen-lg / $grid-columns) * 2 - $grid-gutter-width * 2;
-    }
-}
-
-@media (max-width: $screen-lg-min) {
-    .sc-sidebar {
-        width: ($screen-md / $grid-columns) * 2 - $grid-gutter-width * 2;
-    }
-}
-
-@media (max-width: $screen-md-min) {
-    .sc-sidebar {
-        width: ($screen-sm / $grid-columns) * 2 - $grid-gutter-width * 2;
-    }
-}
-
-
+////////////////////////////////////////
 .sc-feedback {
     width: 300px;
     padding: 4px 4px;
@@ -306,7 +396,7 @@ body {
 }
 
 
-
+////////////////////////////////////////
 #error_explanation {
     @extend .alert;
     @extend .alert-danger;
@@ -316,6 +406,8 @@ body {
     @extend .has-error;
 }
 
+
+////////////////////////////////////////
 .navbar-procgarden {
     @extend .navbar-inverse;
 

@@ -1,0 +1,7 @@
+asset 'jquery'
+asset 'jquery-ujs'
+asset 'jquery-cookie'
+asset 'jquery-ui'
+asset 'jquery-autosize'
+asset 'angular-ui-select2'
+asset 'reconnectingWebsocket'
