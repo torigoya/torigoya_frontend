@@ -302,6 +302,46 @@ body {
 }
 
 
+.sc-editor-config-marker {
+    position: absolute;
+    top: 0.2em;
+    right: 0.2em;
+
+    margin: 0px;
+    padding: 1px 0 0 2px;
+    width: 1.2em;
+    height: 1.2em;
+
+    font-size: 1.2em;
+    color: #efefef;
+    opacity: 0.6;
+    z-index: 999;
+
+    background-color: #000;
+    border-radius: 2px;
+
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.sc-editor-config {
+    position: absolute;
+    top: 2.0em;
+    right: 0.2em;
+
+    border-radius: 5px;
+
+    background-color: #fff;
+    width: 30%;
+}
+
+
 // For controller
 .sc-input-tabset {
     badding-top: 0;

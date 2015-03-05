@@ -5,7 +5,10 @@
 <%# /editor body %>
 
 <%# editor option %>
-<span class="sc-output-t sc-std">stdout</span>
+<div class="sc-editor-config-marker">
+    <span class="glyphicon glyphicon-cog" ng-click="toggleOptionCollapse()"></span>
+</div>
+<%= render :partial => "_common/editor_options" %>
 <%# /editor option %>
 
 <script type="text/javascript">

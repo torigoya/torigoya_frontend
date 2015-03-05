@@ -1,6 +1,6 @@
 <div class="container-fluid sc-sub-container">
     <div class="row toolbar">
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <%# clone %>
             <%= form_tag( '/home/index', :method => :post) do %>
                 <input type='hidden'
@@ -10,7 +10,7 @@
                 <button type='submit'
                         class='btn btn-success'
                         style="width: 100%">
-                    <strong>Clone!</strong>
+                    <strong><span class="glyphicon glyphicon-cloud-download"></span> Clone</strong>
                 </button>
             <% end %>
         </div>

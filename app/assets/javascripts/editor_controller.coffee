@@ -105,7 +105,9 @@
 
         $scope.is_option_collapsed = $.cookie("sc-editor-is-option-collapsed") == 'true'
 
-        $scope.toggle_option_collapse = () =>
+        $scope.toggleOptionCollapse = () =>
+            console.log "aaaa"
+
             $scope.is_option_collapsed = !$scope.is_option_collapsed
             $.cookie("sc-editor-is-option-collapsed", $scope.is_option_collapsed.toString())
 
