@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source 'https://rails-assets.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
@@ -74,7 +73,7 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rbenv'
 
-  gem 'dotenv-deployment', require: 'dotenv/deployment'
+  # gem 'dotenv-deployment', require: 'dotenv/deployment'
 end
 
 gem 'dotenv-rails'
