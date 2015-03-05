@@ -1,5 +1,5 @@
 /// <reference path="typings/jquery/jquery.d.ts"/>
-/// <reference path="../../../vendor/assets/bower_components/reconnectingWebsocket/reconnecting-websockets.d.ts"/>
+/// <reference path="reconnecting-websockets.d.ts"/>
 
 module AOJ {
     export enum Language {
