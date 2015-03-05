@@ -77,6 +77,7 @@ class State
   field :status, :type => Integer
   field :system_error_message, :type => String
 
+  field :free_command_line, :type => String
   field :structured_command_line, :type => Array
   field :cpu_time_sec_limit, :type => Float
   field :memory_bytes_limit, :type => Integer
@@ -94,5 +95,7 @@ class LinkState < State
 end
 
 class RunState < State
+  field :stdin, :type => BSON::Binary
+
   embedded_in :ticket, :inverse_of => :run_states
 end

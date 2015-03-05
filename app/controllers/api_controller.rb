@@ -192,6 +192,10 @@ class ApiController < ApplicationController
       state["err_until"] = to
     end
 
+    if state.has_key?("stdin")
+      state["stdin"] = Base64.strict_encode64(state["stdin"].data)
+    end
+
     remove_extra_values(state)
   end
 

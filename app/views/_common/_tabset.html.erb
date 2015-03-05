@@ -10,7 +10,7 @@
         <li class="sc-add-btn">
             <button type="button"
                     class="btn btn-primary btn-xs"
-                    ng-disabled="is_running"
+                    ng-disabled="!is_ticket_appendable()"
                     ng-click="append_ticket()">
                 <span class="glyphicon glyphicon-plus"></span>
             </button>
@@ -26,19 +26,25 @@
         <tab-heading tooltip="{{ticket.proc.selected.title}}">
             <span class="glyphicon glyphicon-file" ng-if="!ticket.is_processing"></span>
             <img src="/assets/loading.gif" ng-if="ticket.is_processing"></img>
+            <a href="#" ng-click="remove_ticket_tab($index)" ng-if="is_ticket_tab_removable($index)">
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            </a>
         </tab-heading>
 
         <!-- tab content -->
         <div class="tab-pane" ng-if="$index == selected_tab_index">
             <!-- language operation -->
-            <div class="container-fluid has-no-extra-space">
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <%= render :partial => "_common/proc_part", :locals => {
                             :readonly => readonly
                         } %>
                     </div>
-                    <div class="col-sm-6">
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
                         <%= render :partial => "_common/operator_container", :locals => {
                             :readonly => readonly
                         } %>
@@ -47,6 +53,7 @@
             </div>
         </div>
         <!-- /tab content -->
+
     </tab>
     <!-- /tab -->
 </tabset>

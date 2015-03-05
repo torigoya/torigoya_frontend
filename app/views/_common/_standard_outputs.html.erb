@@ -1,5 +1,6 @@
 <%# stdout %>
-<div class="row" ng-if="<%= obj %>.result.stdout.length>0">
+<div class="<% unless local_assigns[:tag].nil? %><%= tag %><% else %>row<% end %>"
+     ng-if="<%= obj %>.result.stdout.length>0">
     <div class="col-sm-12"
          class="sc-output-layout">
         <span class="sc-output-t sc-std" ng-hide="<%= obj %>.ui.tip_stdout">stdout</span>
@@ -15,7 +16,8 @@
 </div>
 
 <%# stderr %>
-<div class="row" ng-if="<%= obj %>.result.stderr.length>0">
+<div class="<% unless local_assigns[:tag].nil? %><%= tag %><% else %>row<% end %>"
+     ng-if="<%= obj %>.result.stderr.length>0">
     <div class="col-sm-12"
          class="sc-output-layout">
         <span class="sc-output-t sc-err" ng-hide="<%= obj %>.ui.tip_stderr">stderr</span>

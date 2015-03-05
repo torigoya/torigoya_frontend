@@ -22,18 +22,12 @@ gem 'therubyracer',  platforms: :ruby
 gem 'bootstrap-sass'
 gem 'angularjs-rails'
 gem 'angular-ui-bootstrap-rails'
-
-#
-gem 'rails-assets-jquery'
-gem 'rails-assets-jquery-ujs'
-gem 'rails-assets-jquery-cookie'
-gem 'rails-assets-jquery-ui'
-gem 'rails-assets-jquery-autosize'
-gem 'rails-assets-angular-ui-select2'
-
-# Use jquery as the JavaScript library
 gem 'codemirror-rails', :github => 'fixlr/codemirror-rails'
 
+#
+gem "bower-rails", "~> 0.9.2"
+
+#
 gem 'kaminari'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks

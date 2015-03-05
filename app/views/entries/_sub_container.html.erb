@@ -1,8 +1,7 @@
-<div class="container-fluid has-no-extra-space">
-    <div class="row">
-        <div class="col-sm-12 has-no-extra-space0">
-
-            <!-- clone -->
+<div class="container-fluid sc-sub-container">
+    <div class="row toolbar">
+        <div class="col-sm-2">
+            <%# clone %>
             <%= form_tag( '/home/index', :method => :post) do %>
                 <input type='hidden'
                        id='entry_id'
@@ -11,18 +10,28 @@
                 <button type='submit'
                         class='btn btn-success'
                         style="width: 100%">
-                    <strong>Clone!</strong>
+                    <strong><span class="glyphicon glyphicon-cloud-download"></span> Clone</strong>
                 </button>
             <% end %>
+        </div>
 
-            <h6>Visibility:</h6>
-            <h6>
-                <span class="glyphicon glyphicon-globe" ng-if="visibility == 0"></span>
-                <span class="glyphicon glyphicon-eye-close" ng-if="visibility == 1"></span>
-                <span class="glyphicon glyphicon-minus-sign" ng-if="visibility == 2"></span>
-                <strong>{{['Public', 'Protected', 'Private'][visibility]}}</strong>
-            </h6>
+        <div class="col-sm-2 accessibility">
+            <strong>{{['Public', 'Protected', 'Private'][visibility]}}</strong>
+        </div>
 
+        <div class="col-sm-3 sns">
+            <div id="custom-tweet-button" ng-if="current_entry_id !== null">
+                <iframe allowtransparency="true"
+                        frameborder="0"
+                        scrolling="no"
+                        ng-src="{{current_entry_tweet}}"
+                        style="width:130px; height:20px;">
+                </iframe>
+            </div>
+        </div>
+
+        <% if false %>
+        <div class="col-sm-3 static">
             <%# owner %>
             <% unless @entry['owner_user_id'].nil? %>
                 <h6>Posted by:</h6>
@@ -39,17 +48,21 @@
                     <strong><%= @entry['created_at'] %></strong>
                 </h6>
             <% end %>
-
-            <div id="custom-tweet-button" ng-if="current_entry_id !== null">
-                <iframe allowtransparency="true"
-                        frameborder="0"
-                        scrolling="no"
-                        ng-src="{{current_entry_tweet}}"
-                        style="width:130px; height:20px;">
-                </iframe>
-            </div>
-
-            <!-- /submit -->
         </div>
+        <% end %>
     </div>
+
+    <!-- operator container -->
+    <div class="row">
+        <!-- tickets tabs -->
+        <div class="col-sm-12 has-no-extra-space">
+            <%= render :partial => '_common/tabset', :locals => {
+                entry_id: @entry_id,
+                with_init: true,
+                readonly: true
+            } %>
+        </div>
+        <!-- /tickets tabs -->
+    </div>
+    <!-- /operator container -->
 </div>

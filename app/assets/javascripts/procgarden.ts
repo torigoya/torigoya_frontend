@@ -1,5 +1,6 @@
 /// <reference path="typings/jquery.cookie/jquery.cookie.d.ts"/>
 /// <reference path="base64_utf8.ts"/>
+/// <reference path="model.d.ts"/>
 
 module ProcGarden {
     export function b64_to_utf8(str: string) {
@@ -44,48 +45,7 @@ module ProcGarden {
     }
 
 
-    export module Model {
-        export interface Ticket {
-            index: number;
 
-            is_running: boolean;
-            processed: boolean;
-            do_execute: boolean;
-            proc_id: number;
-            proc_version: string;
-            proc_label: string;
-
-            phase: number;
-
-            compile_state: Status;
-            link_state: Status;
-            run_states: Array<Status>;
-        }
-
-        export interface Status {
-            index: number;
-
-            type: number;
-
-            used_cpu_time_sec: number;
-            used_memory_bytes: number;
-            signal: number;
-            return_code: number;
-            command_line: string;   // total
-            status: number;
-            system_error_message: string;
-
-            structured_command_line: Array<Array<string>>;
-            cpu_time_sec_limit: number;
-            memory_bytes_limit: number;
-
-            out: string;
-            out_until: number;
-
-            err: string;
-            err_until: number;
-        }
-    }
 
 
     //
@@ -407,6 +367,9 @@ module ProcGarden {
             this.memory = 0;
             this.command = "";
 
+            this.free_command_line = "";
+            this.stdin = "";
+
             this.cpu_limit = 0;
             this.memory_limit = 0;
         }
@@ -421,6 +384,9 @@ module ProcGarden {
             this.cpu = 0;
             this.memory = 0;
             this.command = "";
+
+            this.free_command_line = "";
+            this.stdin = "";
 
             this.cpu_limit = 0;
             this.memory_limit = 0;
@@ -450,6 +416,14 @@ module ProcGarden {
 
             if ( result.command_line != undefined ) {
                 this.command    = result.command_line;
+            }
+
+            if ( result.free_command_line != undefined ) {
+                this.free_command_line = result.free_command_line
+            }
+
+            if ( result.stdin != undefined ) {
+                this.stdin    = b64_to_utf8(result.stdin);
             }
 
             // this.system_error_message
@@ -499,6 +473,9 @@ module ProcGarden {
         public memory: number;
         public command: string;
 
+        public free_command_line: string;
+        public stdin: string;
+
         public cpu_limit: number;
         public memory_limit: number;
 
@@ -542,7 +519,7 @@ module ProcGarden {
         }
 
         public make_command_line_string(is_readonly: boolean): string {
-            if ( !is_readonly ) {
+            if ( !is_readonly || this.result.command.length == 0 ) {
                 // generate from active data
                 return [
                     this.current_phase_detail.command,
@@ -552,7 +529,7 @@ module ProcGarden {
                 ].join(' ');
 
             } else {
-                return ( this.result.command != null ) ? this.result.command : '(none...)';
+                return this.result.command;
             }
         }
 
@@ -563,6 +540,9 @@ module ProcGarden {
 
         public set_result(status: Model.Status) {
             this.result.set(status);
+            this.stdin = this.result.stdin;
+            this.cmd_args.freed = this.result.free_command_line;
+
             this.status_ui.update(status);
         }
 
@@ -648,12 +628,10 @@ module ProcGarden {
                 this.link.set_result(m.link_state);
             }
 
-            if ( m.phase >= PhaseConstant.Running ) {
-                if ( m.run_states != null ) {
-                    m.run_states.forEach((status: Model.Status) => {
-                        this.inputs[status.index].set_result(status);
-                    });
-                }
+            if ( m.run_states != null ) {
+                m.run_states.forEach((status: Model.Status) => {
+                    this.inputs[status.index].set_result(status);
+                });
             }
         }
 
@@ -666,12 +644,10 @@ module ProcGarden {
                 this.link.load_init_data_from_model(m.link_state);
             }
 
-            if ( m.phase >= PhaseConstant.Running ) {
-                if ( m.run_states != null ) {
-                    m.run_states.forEach((status: Model.Status) => {
-                        this.inputs[status.index].load_init_data_from_model(status);
-                    });
-                }
+            if ( m.run_states != null ) {
+                m.run_states.forEach((status: Model.Status) => {
+                    this.inputs[status.index].load_init_data_from_model(status);
+                });
             }
         }
 

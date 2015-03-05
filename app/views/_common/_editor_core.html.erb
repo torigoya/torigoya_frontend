@@ -1,35 +1,30 @@
-<!-- editor body -->
-<div class="row">
-    <div class="col-sm-12" ng-non-bindable>
-        <% if source_codes.nil? %>
-            <textarea id="sc-code-editor" name="sc-code-editor" class="sc-normal-editor"></textarea>
-        <% else %>
-            <%# NOTE: source_codes is array... %>
-            <textarea id="sc-code-editor" name="sc-code-editor" class="sc-normal-editor"><%= source_codes[0] %></textarea>
-        <% end %>
-    </div>
-</div>
-<!-- /editor body -->
+<%# editor body %>
+<form class="sc-normal-editor" ng-non-bindable>
+    <textarea id="sc-code-editor" name="sc-code-editor"><% unless source_codes.nil? %><%= source_codes[0] %><% end %></textarea>
+</form>
+<%# /editor body %>
 
+<%# editor option %>
+<div class="sc-editor-config-marker">
+    <span class="glyphicon glyphicon-cog" ng-click="toggleOptionCollapse()"></span>
+</div>
+<%= render :partial => "_common/editor_options" %>
+<%# /editor option %>
+
+<script type="text/javascript">
 <% if readonly != nil && readonly == true %>
     <%# readonly %>
-
-    <script type="text/javascript">
-        $(function() {
-            sc_setup_editor({
-                readonly: true
-            });
-            $('#sc-code-editor').autosize();
-        });
-    </script>
+    $(function() {
+       sc_setup_editor({
+           readonly: true
+       });
+    });
 
 <% else %>
     <%# normal %>
-    <script type="text/javascript">
-        $(function() {
-            sc_setup_editor({
-                height: "280px",
-                extra_key: {
+    $(function() {
+        sc_setup_editor({
+            extra_key: {
                     "Ctrl-Enter": (function() {
                         var s = angular.element($("#sc-code-editor-ctrl")).scope();
                         s.$apply(function () {
@@ -39,5 +34,5 @@
                 }
             });
         });
-    </script>
 <% end %>
+</script>

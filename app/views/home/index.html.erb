@@ -1,15 +1,17 @@
-<div class="container-fluid ng-scope has-no-extra-space" ng-controller="EntryController">
-    <div class="row has-no-extra-space">
+<div class="sc-main-editor" ng-controller="EntryController">
+    <div class="inner-frame">
         <!-- editor/input container -->
-        <div class="col-sm-11 has-no-extra-space">
+        <div class="editor"  ng-controller="SourceCodeEditor">
             <%= render :partial => 'main_container' %>
         </div>
         <!-- /editor/input container -->
 
         <!-- mini container -->
-        <div class="col-sm-1 has-no-extra-space">
+        <div class="controller">
             <%= render :partial => 'sub_container' %>
         </div>
         <!-- /mini container -->
+
+        <div class="dummy"></div>
     </div>
 </div>

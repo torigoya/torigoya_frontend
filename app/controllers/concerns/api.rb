@@ -9,117 +9,6 @@ module Api
     include ExecutionTaskWorker
     include Cages
 
-    def self.parse_execution_settings(base, tag)
-      command_line = if base.has_key?("command_line")
-                       ApiUtil.validate_type(base, "command_line", String)
-                     else
-                       ""
-                     end
-      structured_command_line = ApiUtil.validate_type(base, "structured_command_line", Array)
-
-      return TorigoyaKit::ExecutionSetting.new(command_line,
-                                               structured_command_line,
-                                               5,   # 5sec
-                                               2 * 1024 * 1024 * 1024 # 1GB
-                                               )
-    end
-
-
-    class ExecutableTicketInfo
-      def initialize(index, kit)
-        @index = index    # int
-        @kit = kit        # TorigoyaKit::Ticket
-      end
-      attr_reader :index, :kit
-
-      def proc_id
-        return @kit.proc_id
-      end
-
-      def proc_version
-        return @kit.proc_version
-      end
-    end
-
-    class NoExecutableTicketInfo
-      def initialize(index, proc_id, proc_version, compile_inst, link_inst)
-        @index = index
-        @proc_id = proc_id
-        @proc_version = proc_version
-        @compile_inst = compile_inst
-        @link_inst = link_inst
-      end
-      attr_reader :index, :proc_id, :proc_version
-      attr_reader :compile_inst, :link_inst
-    end
-
-    def self.load_tickets_info(value, source_codes)
-      tickets_data = ApiUtil.validate_array(value, "tickets", 1, 10)
-      tickets = tickets_data.map.with_index do |ticket, index|
-        proc_id = ApiUtil.validate_type(ticket, "proc_id", Integer)
-        proc_version = ApiUtil.validate_type(ticket, "proc_version", String)
-        do_execution = ApiUtil.validate_type(ticket, "do_execution", Boolean)
-
-        ##### ========================================
-        ##### compile
-        ##### ========================================
-        compile = if ticket.has_key?("compile")
-                    parse_execution_settings(ticket["compile"], :compile)
-                  else
-                    nil
-                  end
-
-        ##### ========================================
-        ##### link
-        ##### ========================================
-        link = if ticket.has_key?("link")
-                 parse_execution_settings(ticket["link"], :link)
-               else
-                 nil
-               end
-
-        ##### ========================================
-        ##### build inst
-        ##### ========================================
-        build_inst = unless compile.nil? && link.nil?
-                       TorigoyaKit::BuildInstruction.new(compile, link)
-                     else
-                       nil
-                     end
-
-        ##### ========================================
-        ##### inputs
-        ##### ========================================
-        inputs_data = ApiUtil.validate_array(ticket, "inputs", 1, 10)
-        inputs = inputs_data.map.with_index do |input, index|
-          stdin = TorigoyaKit::SourceData.new(index.to_s,
-                                              ApiUtil.validate_type(input, "stdin", String)
-                                              )
-          run = parse_execution_settings(input, :run)
-          next TorigoyaKit::Input.new(stdin, run)
-        end
-
-        #
-        if do_execution
-          ##### ========================================
-          ##### run inst
-          ##### ========================================
-          run_inst = TorigoyaKit::RunInstruction.new(inputs)
-
-          base_name = Digest::MD5.hexdigest("#{proc_id}/#{proc_version}/#{source_codes}/#{Time.now}") + SecureRandom.hex(16)
-
-          #
-          kit = TorigoyaKit::Ticket.new(base_name, proc_id, proc_version, source_codes, build_inst, run_inst)
-          next ExecutableTicketInfo.new(index, kit)
-
-        else
-          next NoExecutableTicketInfo.new(index, proc_id,  proc_version, compile, link)
-        end
-      end # tickets_data.map
-
-      return tickets
-    end
-
     def self.execute(params)
       # ========================================
       # value
@@ -212,6 +101,7 @@ module Api
 
       #
       tickets_info.each do |t|
+        # create label string
         label = "#{proc_table[t.proc_id]['Description']['Name']}[#{t.proc_version}]"
 
         if t.is_a?(ExecutableTicketInfo)
@@ -224,7 +114,8 @@ module Api
                                       :proc_version => t.proc_version,
                                       :proc_label => label,
                                       :phase => Phase::Waiting
-                                      )
+                                     )
+          self.set_initial_record(model, t)
           model.save!
 
           # execute!
@@ -240,7 +131,8 @@ module Api
                                       :proc_version => t.proc_version,
                                       :proc_label => label,
                                       :phase => Phase::NotExecuted
-                                      )
+                                     )
+          self.set_initial_record(model, t)
           model.save!
         end
       end # tickets.each
@@ -252,5 +144,180 @@ module Api
         :is_error => false
       }
     end
+
+
+    def self.set_initial_record(model, ticket)
+      # set compile information
+      unless ticket.compile_setting.nil?
+        st = ticket.compile_setting
+        sc = st.structured_command.map &:to_tuple
+        cmd = st.command_line
+
+        model.compile_state = CompileState.new(:index => 0,
+                                               :structured_command_line => sc,
+                                               :cpu_time_sec_limit => st.cpu_limit,
+                                               :memory_bytes_limit => st.memory_limit,
+                                               :free_command_line => cmd
+                                              )
+      end
+
+      # set link information
+      unless ticket.link_setting.nil?
+        st = ticket.link_setting
+        sc = st.structured_command.map &:to_tuple
+        cmd = st.command_line
+
+        model.link_state = LinkState.new(:index => 0,
+                                         :structured_command_line => sc,
+                                         :cpu_time_sec_limit => st.cpu_limit,
+                                         :memory_bytes_limit => st.memory_limit,
+                                         :free_command_line => cmd
+                                        )
+      end
+
+      # set inputs information
+      ticket.inputs.each.with_index do |input, index|
+        st = input.run_setting
+        sc = st.structured_command.map &:to_tuple
+        cmd = st.command_line
+        stdin_bin = BSON::Binary.new(input.stdin.code.force_encoding("ASCII-8BIT"))
+
+        model.run_states << RunState.new(:index => index,
+                                         :structured_command_line => sc,
+                                         :cpu_time_sec_limit => st.cpu_limit,
+                                         :memory_bytes_limit => st.memory_limit,
+                                         :free_command_line => cmd,
+                                         :stdin => stdin_bin
+                                        )
+      end
+    end
+
+    ###
+    def self.parse_execution_settings(base, tag)
+      command_line = if base.has_key?("command_line")
+                       ApiUtil.validate_type(base, "command_line", String)
+                     else
+                       ""
+                     end
+      structured_command_line = ApiUtil.validate_type(base, "structured_command_line", Array)
+
+      return TorigoyaKit::ExecutionSetting.new(command_line,
+                                               structured_command_line,
+                                               5,   # 5sec
+                                               2 * 1024 * 1024 * 1024 # 2GB
+                                               )
+    end
+
+
+    class ExecutableTicketInfo
+      def initialize(index, kit)
+        @index = index    # int
+        @kit = kit        # TorigoyaKit::Ticket
+      end
+      attr_reader :index, :kit
+
+      def proc_id
+        return @kit.proc_id
+      end
+
+      def proc_version
+        return @kit.proc_version
+      end
+
+      def compile_setting
+        return @kit.build_inst.compile_setting
+      end
+
+      def link_setting
+        return @kit.build_inst.link_setting
+      end
+
+      def inputs
+        return @kit.run_inst.inputs
+      end
+    end
+
+    class NoExecutableTicketInfo
+      def initialize(index, proc_id, proc_version, compile_s, link_s, inputs)
+        @index = index
+        @proc_id = proc_id
+        @proc_version = proc_version
+        @compile_setting = compile_s
+        @link_setting = link_s
+        @inputs = inputs
+      end
+      attr_reader :index, :proc_id, :proc_version
+      attr_reader :compile_setting, :link_setting, :inputs
+    end
+
+    # @return [ExecutableTicketInfo or NoExecutableTicketInfo]
+    def self.load_tickets_info(value, source_codes)
+      tickets_data = ApiUtil.validate_array(value, "tickets", 1, 10)
+      tickets = tickets_data.map.with_index do |ticket, index|
+        proc_id = ApiUtil.validate_type(ticket, "proc_id", Integer)
+        proc_version = ApiUtil.validate_type(ticket, "proc_version", String)
+        do_execution = ApiUtil.validate_type(ticket, "do_execution", Boolean)
+
+        ##### ========================================
+        ##### compile
+        ##### ========================================
+        compile = if ticket.has_key?("compile")
+                    parse_execution_settings(ticket["compile"], :compile)
+                  else
+                    nil
+                  end
+
+        ##### ========================================
+        ##### link
+        ##### ========================================
+        link = if ticket.has_key?("link")
+                 parse_execution_settings(ticket["link"], :link)
+               else
+                 nil
+               end
+
+        ##### ========================================
+        ##### build inst
+        ##### ========================================
+        build_inst = unless compile.nil? && link.nil?
+                       TorigoyaKit::BuildInstruction.new(compile, link)
+                     else
+                       nil
+                     end
+
+        ##### ========================================
+        ##### inputs [1, 10]
+        ##### ========================================
+        inputs_data = ApiUtil.validate_array(ticket, "inputs", 1, 10)
+        inputs = inputs_data.map.with_index do |input, index|
+          stdin = TorigoyaKit::SourceData.new(index.to_s,
+                                              ApiUtil.validate_type(input, "stdin", String)
+                                              )
+          run = parse_execution_settings(input, :run)
+          next TorigoyaKit::Input.new(stdin, run)
+        end
+
+        #
+        if do_execution
+          ##### ========================================
+          ##### run inst
+          ##### ========================================
+          run_inst = TorigoyaKit::RunInstruction.new(inputs)
+
+          base_name = Digest::MD5.hexdigest("#{proc_id}/#{proc_version}/#{source_codes}/#{Time.now}") + SecureRandom.hex(16)
+
+          #
+          kit = TorigoyaKit::Ticket.new(base_name, proc_id, proc_version, source_codes, build_inst, run_inst)
+          next ExecutableTicketInfo.new(index, kit)
+
+        else
+          next NoExecutableTicketInfo.new(index, proc_id,  proc_version, compile, link, inputs)
+        end
+      end # tickets_data.map
+
+      return tickets
+    end
+
+
   end # clsss PostSourceV1
 end # module Api

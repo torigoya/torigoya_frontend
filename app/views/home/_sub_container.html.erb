@@ -1,18 +1,18 @@
-<div class="container-fluid has-no-extra-space">
-    <div class="row">
-        <div class="col-sm-12 has-no-extra-space0">
-            <!-- submit -->
-
+<div class="container-fluid sc-sub-container">
+    <div class="row toolbar">
+        <div class="col-sm-2">
             <button type='button'
                     class='btn btn-primary'
                     style="width: 100%"
                     ng-disabled="!submit_able || is_running"
                     ng-click="submit_all()">
-                <strong>Submit!</strong>
+                <strong><span class="glyphicon glyphicon-play-circle"></span> Submit</strong>
             </button>
+        </div>
 
-            <h6>Visibility:</h6>
-            <h6><strong>{{['Public', 'Protected', 'Private'][visibility]}}</strong></h6>
+        <div class="col-sm-4 accessibility">
+            Visibility: <strong>{{['Public', 'Protected', 'Private'][visibility]}}</strong>
+
             <div class="btn-group btn-group-sm">
                 <button type="button" class="btn btn-default" ng-model="visibility" btn-radio="0">
                     <span class="glyphicon glyphicon-globe"></span>
@@ -24,7 +24,9 @@
                     <span class="glyphicon glyphicon-minus-sign"></span>
                 </button>
             </div>
+        </div>
 
+        <div class="col-sm-3 sns">
             <div id="custom-tweet-button" ng-if="current_entry_id !== null">
                 <iframe allowtransparency="true"
                         frameborder="0"
@@ -33,13 +35,27 @@
                         style="width:130px; height:20px;">
                 </iframe>
             </div>
+        </div>
 
+        <div class="col-sm-2 static">
             <a href="{{current_entry_target_url}}"
                ng-if="current_entry_id !== null">
-                View on StaticPage
+                <span class="glyphicon glyphicon-share-alt"></span>StaticPage
             </a>
-
-            <!-- /submit -->
         </div>
     </div>
+
+    <!-- operator container -->
+    <div class="row">
+        <!-- tickets tabs -->
+        <div class="col-sm-12 has-no-extra-space">
+            <%= render :partial => '_common/tabset', :locals => {
+                entry_id: @cloned_from_entry_id,
+                with_init: true,
+                readonly: false
+            } %>
+        </div>
+        <!-- /tickets tabs -->
+    </div>
+    <!-- /operator container -->
 </div>

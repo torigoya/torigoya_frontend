@@ -2,7 +2,7 @@
     <!-- input -->
     <div class="row" ng-if="tickets[selected_tab_index].do_execution === true">
         <div class="col-sm-12">
-            <tabset class="sc-input-tabset">
+            <tabset class="sc-input-tabset" vertical="true" type="pills">
                 <tab ng-repeat="input in tickets[selected_tab_index].inputs"
                      active="input.ui.is_active_tab"
                      select="change_input_tab($index)"
@@ -20,15 +20,15 @@
 
                 </tab>
             </tabset>
-
-            <% unless readonly %>
-                <button type='button'
-                        class='btn btn-primary btn-xs'
-                        ng-click="append_input(selected_tab_index)">
-                    add input
-                </button>
-            <% end %>
         </div>
     </div>
+
+    <% unless readonly %>
+        <button type='button'
+                class='btn btn-primary btn-xs'
+                ng-click="append_input(selected_tab_index)">
+            add input
+        </button>
+    <% end %>
     <!-- /input -->
 </div>
