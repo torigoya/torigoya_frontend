@@ -377,6 +377,29 @@ body {
 
 ////////////////////////////////////////
 //
+#easter-egg {
+    .popup {
+        position: absolute;
+        right: 10px;
+        bottom: $footer_height + $sc-space + 42px;
+        z-index: 500;
+
+        width: 32%;
+
+        border-radius: 5px;
+        opacity: 0.95;
+
+        background-color: #2f374c;
+        color: #efefef;
+
+        table {
+            background-color: #efefef;
+            color: #0f0f0f;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
 #symbol-bunchou {
     position: absolute;
     right: 0px;

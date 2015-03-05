@@ -1,27 +1,27 @@
-<!-- editor body -->
+<%# editor body %>
 <form class="sc-normal-editor" ng-non-bindable>
     <textarea id="sc-code-editor" name="sc-code-editor"><% unless source_codes.nil? %><%= source_codes[0] %><% end %></textarea>
 </form>
-<!-- /editor body -->
+<%# /editor body %>
 
+<%# editor option %>
+<span class="sc-output-t sc-std">stdout</span>
+<%# /editor option %>
+
+<script type="text/javascript">
 <% if readonly != nil && readonly == true %>
     <%# readonly %>
-
-    <script type="text/javascript">
-        $(function() {
-            sc_setup_editor({
-                readonly: true
-            });
-            $('#sc-code-editor').autosize();
-        });
-    </script>
+    $(function() {
+       sc_setup_editor({
+           readonly: true
+       });
+    });
 
 <% else %>
     <%# normal %>
-    <script type="text/javascript">
-        $(function() {
-            sc_setup_editor({
-                extra_key: {
+    $(function() {
+        sc_setup_editor({
+            extra_key: {
                     "Ctrl-Enter": (function() {
                         var s = angular.element($("#sc-code-editor-ctrl")).scope();
                         s.$apply(function () {
@@ -31,5 +31,5 @@
                 }
             });
         });
-    </script>
 <% end %>
+</script>

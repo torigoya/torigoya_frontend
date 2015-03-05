@@ -16,50 +16,49 @@ module AOJ {
         JavaScript,
     }
 
-    function langEnumToString(e: Language) {
-        var str = [
-            'C',
-            'C++',
-            'JAVA',
-            'C++11',
-            'C#',
-            'D',
-            'Ruby',
-            'Python',
-            'Python3',
-            'PHP',
-            'JavaScript',
-        ];
+    export var LanguageString: Array<string> = [
+        'C',
+        'C++',
+        'JAVA',
+        'C++11',
+        'C#',
+        'D',
+        'Ruby',
+        'Python',
+        'Python3',
+        'PHP',
+        'JavaScript',
+    ];
 
-        return str[e];
+    export function langEnumToString(e: Language) {
+        return LanguageString[e];
     }
 
     class Submit {
-        static ENDPOINT = 'http://judge.u-aizu.ac.jp/onlinejudge/servlet/Submit';
+        static ENDPOINT = 'http://judge.u-aizu.ac.jp/onlinejudge/webservice/submit';
     }
 
     export function submit(
         userId: string,
         password: string,
-        problemId: number,
+        problemId: string,
+        lessonId: string,
         lang: Language,
         source: string
     ) {
-        console.log('aoj submit!');
-
-        $.post(Submit.ENDPOINT, {
-            userID: userId,
-            password: password,
-            problemNO: problemId,
-            language: langEnumToString(lang),
-            sourceCode: source,
-        }).done((data: any) => {
-            alert( "Data Loaded: " + data );
-        }).fail(() => {
-            alert('Failed to submit a source to AOJ...');
+        return $.ajax({
+            type: 'POST',
+            url: Submit.ENDPOINT,
+            data: {
+                userID: userId,
+                password: password,
+                problemNO: problemId,
+                lessonID: lessonId,
+                language: langEnumToString(lang),
+                sourceCode: source,
+            },
+            dataType: 'html'
         });
-
-        //var ws = new ReconnectingWebSocket('ws://....');
     }
 
 
@@ -67,21 +66,17 @@ module AOJ {
         static ENDPOINT = 'ws://ionazn.org/status';
     }
 
-    export function livestatus(userId: string, callback: ()=>void) {
+    export function livestatus(callback: (e: any, isError: boolean)=>void) {
         var ws = new ReconnectingWebSocket(StatusStreem.ENDPOINT);
-        ws.onmessage = (event: any) => {
-            console.log(event);
-        };
-        ws.onerror = (event: ErrorEvent) => {
-            console.error(event);
-        };
+        if (callback) {
+            ws.onmessage = (event: CustomEvent) => {
+                callback(event, false);
+            };
+            ws.onerror = (event: ErrorEvent) => {
+                callback(event, true);
+            };
+        }
+
         return ws;
     }
 }
-
-(() => {
-    var src = 'import std.stdio; \
-    void main() { "Hello World".writeln; }';
-
-    AOJ.livestatus('', null);
-})();

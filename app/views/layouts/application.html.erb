@@ -137,9 +137,89 @@
                 <!-- footer -->
                 <div id="footer">
                     <div class="container-fluid">
-                        <img id="symbol-bunchou" src="/assets/pepe.png">
+                        <div id="easter-egg" ng-controller="EasterEggController">
+                            <img id="symbol-bunchou" src="/assets/pepe.png" ng-click="togglePopup()">
+
+                            <div class="popup" ng-if="showingPopup">
+                                <div class="container-fluid" ng-init="aoj.init()">
+                                    <h3>AOJ mode</h3>
+                                    <form id="aoj-submit" ng-submit="aoj.submit()">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <div class="form-group input-group-sm">
+                                                    <input type="text" class="form-control" ng-model="aoj.userId" id="aoj-userid" name="aoj-userid" placeholder="UserID">
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="form-group input-group-sm">
+                                                    <input type="password" class="form-control" ng-model="aoj.password" id="aoj-password" name="aoj-password" placeholder="Password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <div class="form-group input-group-sm">
+                                                    <input type="text" class="form-control" ng-model="aoj.problemNo" id="aoj-problem-no" placeholder="ProblemNo">
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="form-group input-group-sm">
+                                                    <input type="text" class="form-control" ng-model="aoj.lessonId" id="aoj-lesson-id" placeholder="LessonId">
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="form-group input-group-sm">
+                                                    <select class="form-control"
+                                                            ng-init="aoj.language=aoj.languages[0]"
+                                                            ng-model="aoj.language"
+                                                            ng-options="l.title for l in aoj.languages"
+                                                            >
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="form-group input-group-sm">
+                                                    <button type="submit" class="btn btn-default btn-sm" style="width: 100%">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <table class="table table-condensed" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Run#</th>
+                                                        <th>Problem</th>
+                                                        <th>Status</th>
+                                                        <th>%</th>
+                                                        <th>Time</th>
+                                                        <th>Memory</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="s in aoj.status.slice().reverse()">
+                                                    <tr ng-if="s.isDummy">
+                                                        <td>---</td>
+                                                    </tr>
+                                                    <tr ng-if="!s.isDummy" class="{{s.getStatusStyle()}}">
+                                                        <td><a href="http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid={{s.runID}}#1" target="_blank">{{s.runID}}</a></td>
+                                                        <td><a href="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id={{s.getId()}}" target="_blank">{{s.problemTitle}}</a></td>
+                                                        <td><a href="http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid={{s.runID}}#2" target="_blank">{{s.getStatusString()}}</a></td>
+                                                        <td><a href="http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid={{s.runID}}#3" target="_blank">{{s.accuracy}}</a></td>
+                                                        <td>{{s.cputime}}s</td>
+                                                        <td>{{s.memory}}KB</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <p class="navbar-text pull-right">
-                            2013 - 2014 <%= link_to "@yutopp", "https://twitter.com/yutopp" %>
+                            2013 - 2015 <%= link_to "@yutopp", "https://twitter.com/yutopp" %>
                         </p>
                     </div>
                 </div>
@@ -162,14 +242,4 @@
         </div>
         <!-- /feedback modal -->
     </body>
-
-    <script type="text/javascript">
-    offset = 60;
-    $('body').scrollspy({ target: '#sc-navbar', offset: offset });
-    $('.sc-nav li a').click(function(event) {
-        event.preventDefault();
-        $($(this).attr('href'))[0].scrollIntoView();
-        scrollBy(0, -offset);
-    });
-    </script>
 </html>
